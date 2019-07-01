@@ -24,27 +24,30 @@ Our main goal in this step is to prepare the request for getting the authorizat
 * scope: A URL-encoded list of the permissions that our app requests.
  
 Speaking in terms of code now, let’s create a new function in the WebViewController class where we’ll prepare our request. We’ll name it startAuthorization(). The first task in it is to specify the most of the request parameters described right before, exactly as shown in the following snippet:
-
+ ```
      func startAuthorization() {
-       // Specify the response type which should always be "code".
-       let responseType = "code"
+     
+         // Specify the response type which should always be "code".
+         let responseType = "code"
  
-       // Set the redirect URL. 
-       let redirectURL = "https://com.appcoda.linkedin.oauth/oauth".
+         // Set the redirect URL. 
+         let redirectURL = "https://com.appcoda.linkedin.oauth/oauth".
+  
+         // Create a random string based on the time interval (it will be in the form linkedin12345679).
+         let state = "linkedin\(Int(NSDate().timeIntervalSince1970))"
  
-       // Create a random string based on the time interval (it will be in the form linkedin12345679).
-       let state = "linkedin\(Int(NSDate().timeIntervalSince1970))"
- 
-       // Set preferred scope.
-       let scope = "r_basicprofile"
-    }
+         // Set preferred scope.
+         let scope = "r_basicprofile"
+         
+    }  
+ ```   
 
 The scope gets the “r_basicprofile” value, matching to the permission that I set to the app in the LinkedIn Developers website. When you set permissions, make sure to take a look at this text from the official documentation.
 
 Our next step is to compose the authorization URL. Note that the https://www.linkedin.com/uas/oauth2/authorization URL must be used for the request, which is already assigned to the authorizationEndPoint property.
 
 Back in our code again:
-
+```
     func startAuthorization() {
       ...
 
@@ -58,12 +61,12 @@ Back in our code again:
  
       print(authorizationURL)
     }
-
+ ```
 
 I added the print line above just to let you see with your own eyes in the console how the request is finally formed.
 Finally, the last action we have to do here is to load the request in our web view. Keep in mind that user will be able to sign in through the web view if only the above request is properly formed. In any other case, LinkedIn will return error messages and you won’t be able to proceed any further. Therefore, make sure that you copy the Client Key and Secret values properly, as well as the authorized redirect URL.
 Loading the request in the web view takes just a couple of lines:
-
+ ```
     func startAuthorization() {
       ...
  
@@ -71,15 +74,16 @@ Loading the request in the web view takes just a couple of lines:
       let request = NSURLRequest(URL: NSURL(string: authorizationURL)!)
       webView.loadRequest(request)
     }
-
+ ```
 
 Before we get to the end of this part, we have to call the above function. This is going to take place in the viewDidLoad(_: ) function:
-
+ ```
     override func viewDidLoad() {
        ...
  
        startAuthorization()
     }
+ ```    
 
 Don’t sign in to your LinkedIn account yet, as there are still things remaining to be done on our part.
 
